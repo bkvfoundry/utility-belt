@@ -1,6 +1,8 @@
 # UtilityBelt
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Build Status](https://img.shields.io/travis/bkvfoundry/utility-belt/master.svg?style=flat-square)](https://travis-ci.org/bkvfoundry/utility-belt.svg)
+[![Coverage Status](https://coveralls.io/repos/bkvfoundry/utility-belt/badge.svg?branch=master&service=github)](https://coveralls.io/github/bkvfoundry/utility-belt?branch=master)
 
 Every time we start a new php project that requires even a small amount of data 
 wrangling, we find ourselves re-writing the same helper functions over and over again.
