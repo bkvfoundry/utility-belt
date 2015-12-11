@@ -5,11 +5,8 @@ sudo: false
 matrix:
   include:
     - php: 5.6
-      env: COLLECT_COVERAGE=true
     - php: 7.0
-      env: COLLECT_COVERAGE=true
-    - php: hhvm
-
+    
 cache:
   directories:
     - $HOME/.composer/cache
