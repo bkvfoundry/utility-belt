@@ -199,7 +199,7 @@ $ composer test
 
 ## Credits
 - [Alex Babkov](https://github.com/ababkov)
-- [All Contributors](https://github.com/bkvfoundry/utility-blet/graphs/contributors)
+- [All Contributors](https://github.com/bkvfoundry/utility-belt/graphs/contributors)
 
 ## License
 The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
