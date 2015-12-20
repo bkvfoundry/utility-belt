@@ -184,6 +184,30 @@ class ArrayUtility
 	}
 
 	/**
+	 * Reduce the array to only the keys specified
+	 * @param array $array
+	 * @param array $keys The keys to keep
+	 * @return array
+	 */
+	public static function keepKeys(array $array, $keys)
+	{
+		//Reuse existing logic
+		return current(CollectionUtility::keepKeys([$array],$keys));
+	}
+
+	/**
+	 * Remove specific keys from the array
+	 * @param array $array
+	 * @param array $keys The keys to remove
+	 * @return array
+	 */
+	public static function removeKeys(array $array, $keys)
+	{
+		//Reuse existing logic
+		return current(CollectionUtility::removeKeys([$array], $keys));
+	}
+
+	/**
 	 * Determines if an array is associative or not.
 	 * @param array $array An array to check
 	 * @return bool True if associative (i.e. an object), false otherwise
