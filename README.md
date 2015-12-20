@@ -103,6 +103,25 @@ CollectionUtility::groupByProperty($items,"dog.name")
 ]
 ```
 
+### (a)sort(array $array, $property, $sort_direction = self::SORT_DIRECTION_ASCENDING, $sort_flags=SORT_REGULAR)
+Sort a collection using a property or nested property
+```
+$items = [
+    ["string"=>"a", "nested"=>["number"=>1]],
+    ["string"=>"d", "nested"=>["number"=>3]],
+    ["string"=>"c", "nested"=>["number"=>3]],
+    ["string"=>"b", "nested"=>["number"=>2]],
+];
+
+CollectionUtility::sort($items, "nested.number", CollectionUtility::SORT_DIRECTION_DESCENDING, SORT_NUMERIC);
+[
+    ["string"=>"c", "nested"=>["number"=>3]],
+    ["string"=>"d", "nested"=>["number"=>3]],
+    ["string"=>"b", "nested"=>["number"=>2]],
+    ["string"=>"a", "nested"=>["number"=>1]]
+]
+```
+
 ### random(array $array)
 Get a random item from an array
 
