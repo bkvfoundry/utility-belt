@@ -329,6 +329,47 @@ class CollectionUtilityTest extends TestCase
 		$this->assertEquals(["a" => 2], $value);
 	}
 
+	public function testThatCollectionCanBeSortedByNestedProperty(){
+		$collection = [
+			["string"=>"a", "nested"=>["number"=>1]],
+			["string"=>"d", "nested"=>["number"=>3]],
+			["string"=>"c", "nested"=>["number"=>3]],
+			["string"=>"b", "nested"=>["number"=>2]],
+		];
+
+		//Sort ascending number
+		$this->assertEquals([
+			["string"=>"a", "nested"=>["number"=>1]],
+			["string"=>"b", "nested"=>["number"=>2]],
+			["string"=>"d", "nested"=>["number"=>3]],
+			["string"=>"c", "nested"=>["number"=>3]],
+		],CollectionUtility::sort($collection, "nested.number", null, SORT_NUMERIC));
+
+		//Sort ascending string
+		$this->assertEquals([
+			["string"=>"a", "nested"=>["number"=>1]],
+			["string"=>"b", "nested"=>["number"=>2]],
+			["string"=>"c", "nested"=>["number"=>3]],
+			["string"=>"d", "nested"=>["number"=>3]],
+		],CollectionUtility::sort($collection, "string", null, SORT_FLAG_CASE | SORT_STRING));
+
+		//Maintain indexes
+		$this->assertEquals([
+			0=>["string"=>"a", "nested"=>["number"=>1]],
+			3=>["string"=>"b", "nested"=>["number"=>2]],
+			2=>["string"=>"c", "nested"=>["number"=>3]],
+			1=>["string"=>"d", "nested"=>["number"=>3]],
+		],CollectionUtility::asort($collection, "string", null, SORT_FLAG_CASE | SORT_STRING));
+
+		//Sort descending
+		$this->assertEquals([
+			["string"=>"c", "nested"=>["number"=>3]],
+			["string"=>"d", "nested"=>["number"=>3]],
+			["string"=>"b", "nested"=>["number"=>2]],
+			["string"=>"a", "nested"=>["number"=>1]],
+		],CollectionUtility::sort($collection, "nested.number", CollectionUtility::SORT_DIRECTION_DESCENDING));
+	}
+
 	public function testThatRandomItemIsReturnedViaRandom()
 	{
 		//Test that null is returned if an empty array is provdied

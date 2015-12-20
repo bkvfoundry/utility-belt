@@ -13,6 +13,9 @@ class CollectionUtility
 	const MATCH_TYPE_LOOSE            = "loose";
 	const MATCH_TYPE_STRICT           = "strict";
 
+	const SORT_DIRECTION_ASCENDING    = "asc";
+	const SORT_DIRECTION_DESCENDING   = "desc";
+
 	/**
 	 * "Pluck" a single property value from every item in the collection
 	 * @param array $collection
@@ -303,6 +306,38 @@ class CollectionUtility
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Sort a collection by a nested key - do not maintain key association
+	 * @param array $array The collection
+	 * @param string $property The name of the property to sort by. This can be a dot separated string.
+	 * @param string $sort_direction The direction to sort in. One of the SORT_DIRECTION_* constants or null to sort ascending.
+	 * @param $sort_flags @see http://php.net/manual/en/function.asort.php
+	 * @return array
+	 */
+	public static function sort(array $array, $property, $sort_direction = self::SORT_DIRECTION_ASCENDING, $sort_flags=SORT_REGULAR){
+		return array_values(self::asort($array, $property, $sort_direction, $sort_flags));
+	}
+
+	/**
+	 * Sort a collection by a nested key - maintain key association
+	 * @param array $array The collection
+	 * @param string $property The name of the property to sort by. This can be a dot separated string.
+	 * @param string $sort_direction The direction to sort in. One of the SORT_DIRECTION_* constants or null to sort ascending.
+	 * @param $sort_flags @see http://php.net/manual/en/function.asort.php
+	 * @return array
+	 */
+	public static function asort(array $array, $property, $sort_direction = self::SORT_DIRECTION_ASCENDING, $sort_flags=SORT_REGULAR){
+		$sort_target = CollectionUtility::pluck($array, $property);
+		if( $sort_direction == self::SORT_DIRECTION_ASCENDING || !isset($sort_direction) ) {
+			asort($sort_target, $sort_flags);
+		} elseif( $sort_direction == self::SORT_DIRECTION_DESCENDING ){
+			arsort($sort_target, $sort_flags);
+		} else {
+			throw new \InvalidArgumentException("Sort direction '{$sort_direction}' not valid. Must be one of asc, desc.");
+		}
+		return array_replace($sort_target, $array);
 	}
 
 	/**
