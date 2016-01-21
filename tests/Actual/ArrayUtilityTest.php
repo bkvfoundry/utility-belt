@@ -184,4 +184,63 @@ class ArrayUtilityTest extends TestCase
 			"c.d.g" => ["h" => "i"]
 		], $result);
 	}
+
+	public function testMapCallbackIsFired()
+	{
+		$arr = [
+				'one' => 'foo',
+		];
+
+		$mock = $this->getMock('stdClass', array('myCallBack'));
+		$mock->expects($this->once())
+				->method('myCallBack')
+				->will($this->returnValue('test'));
+
+		ArrayUtility::map($arr, [$mock, 'myCallBack']);
+	}
+
+	public function testMapFunctionReceivesCorrectParams()
+	{
+		$arr = [
+				'one' => 'foo',
+		];
+
+		ArrayUtility::map($arr, function($value, $key, $arr){
+			$this->assertEquals('foo', $value);
+			$this->assertEquals('one', $key);
+			$this->assertEquals(['one'=>'foo'], $arr);
+		});
+	}
+
+	public function testMapFunctionReturnsCorrectMap()
+	{
+		$arr = [
+				'one' => 'foo',
+		];
+
+		$result = ArrayUtility::map($arr, function($value, $key, $arr){
+			return ['key' => $key, 'value' => $value, 'arr' => $arr];
+		});
+
+        $expected = [
+            [
+                'key' => 'one',
+                'value' => 'foo',
+                'arr' => [
+                    'one' => 'foo',
+                ]
+            ]
+        ];
+
+		$this->assertEquals($expected, $result);
+	}
+
+    public function testMapReturnsEmptyArrayWithFalseyInput()
+    {
+        $result = ArrayUtility::map([], function($value, $key, $arr){
+            return 'test';
+        });
+
+        $this->assertEquals([], $result);
+    }
 }
