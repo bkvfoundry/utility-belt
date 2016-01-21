@@ -211,4 +211,27 @@ class ArrayUtilityTest extends TestCase
 			$this->assertEquals(['one'=>'foo'], $arr);
 		});
 	}
+
+	public function testMapFunctionReturnsCorrectMap()
+	{
+		$arr = [
+				'one' => 'foo',
+		];
+
+		$result = ArrayUtility::map($arr, function($value, $key, $arr){
+			return ['key' => $key, 'value' => $value, 'arr' => $arr];
+		});
+
+        $expected = [
+            [
+                'key' => 'one',
+                'value' => 'foo',
+                'arr' => [
+                    'one' => 'foo',
+                ]
+            ]
+        ];
+
+		$this->assertEquals($expected, $result);
+	}
 }
