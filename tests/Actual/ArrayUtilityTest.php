@@ -234,4 +234,13 @@ class ArrayUtilityTest extends TestCase
 
 		$this->assertEquals($expected, $result);
 	}
+
+    public function testMapReturnsEmptyArrayWithFalseyInput()
+    {
+        $result = ArrayUtility::map([], function($value, $key, $arr){
+            return 'test';
+        });
+
+        $this->assertEquals([], $result);
+    }
 }
