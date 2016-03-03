@@ -82,6 +82,16 @@ class CollectionUtilityTest extends TestCase
 			[]
 		], $kept_keys);
 
+		$special_items = [
+		    ["animal"=>"dog","name"=>"John","weather"=>"mild"],
+		    ["animal"=>"cat","name"=>"William"]
+		];
+		$kept_keys = CollectionUtility::removeKeys($special_items, ["animal","weather"], CollectionUtility::REMOVAL_ACTION_DELETE);
+		$this->assertEquals([
+		    ["name"=>"John"],
+		    ["name"=>"William"]
+		],$kept_keys);
+
 		//Nullify action
 		$kept_keys = CollectionUtility::removeKeys($items, ["a", "c"], CollectionUtility::REMOVAL_ACTION_NULLIFY);
 		$this->assertEquals([

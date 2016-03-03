@@ -146,7 +146,7 @@ class ArrayUtilityTest extends TestCase
 		$array2 = $array;
 
 		//Ensure map is applied recursively
-		$this->assertEquals(["a" => "b", "c" => ["d", "e"]], ArrayUtility::mapRecursive($array, "trim"), "Trim not run recursively");
+		$this->assertEquals(["a" => "b", "c" => ["d", "e"]], ArrayUtility::mapRecursive($array, function($value){ return trim($value); }), "Trim not run recursively");
 
 		//Ensure array doesn't mutate
 		$this->assertEquals($array, $array2, "Array has mutated");
@@ -283,7 +283,7 @@ class ArrayUtilityTest extends TestCase
 		$this->assertEquals($expected, $result);
 	}
 
-	public function testMapReturnsEmptyArrayWithFalseyInput()
+	public function testMapReturnsEmptyArrayWithEmptyArrayInput()
 	{
 		$result = ArrayUtility::map([], function ($value, $key, $arr) {
 			return 'test';
