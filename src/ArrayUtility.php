@@ -174,12 +174,12 @@ class ArrayUtility
 	{
 		foreach ($array as $key => $value) {
 			if (is_array($value) && $map_arrays) {
-				$value = call_user_func($callback, $value);
+				$value = call_user_func_array($callback, [$value, $key, $array]);
 			}
 			if (is_array($value)) {
 				$value = self::mapRecursive($value, $callback, $map_arrays);
 			} else {
-				$value = call_user_func($callback, $value);
+				$value = call_user_func_array($callback, [$value, $key, $array]);
 			}
 			$array[ $key ] = $value;
 		}
@@ -231,11 +231,8 @@ class ArrayUtility
 	 * @param callable $callable
 	 * @return array
 	 */
-	public static function map($array, callable $callable)
+	public static function map(array $array, callable $callable)
 	{
-		if (!$array) {
-			return [];
-		}
 		$return = [];
 		foreach ($array as $k => $v) {
 			$return[] = call_user_func_array($callable, [$v, $k, $array]);
