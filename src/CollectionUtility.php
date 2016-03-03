@@ -13,8 +13,11 @@ class CollectionUtility
 	const MATCH_TYPE_LOOSE            = "loose";
 	const MATCH_TYPE_STRICT           = "strict";
 
-	const SORT_DIRECTION_ASCENDING    = "asc";
-	const SORT_DIRECTION_DESCENDING   = "desc";
+	const SORT_DIRECTION_ASCENDING  = "asc";
+	const SORT_DIRECTION_DESCENDING = "desc";
+
+	const REMOVAL_ACTION_DELETE  = "delete";
+	const REMOVAL_ACTION_NULLIFY = "nullify";
 
 	/**
 	 * "Pluck" a single property value from every item in the collection
@@ -36,16 +39,26 @@ class CollectionUtility
 	 * Reduce every item in the collection to only the keys specified
 	 * @param array $collection
 	 * @param array $keys The keys to keep
+	 * @param string $removal_action One of the removal action constants. Default is to delete keys but you can also
+	 *     nullify / clear them instead.
 	 * @return array
 	 */
-	public static function keepKeys(array $collection, $keys)
+	public static function keepKeys(array $collection, $keys, $removal_action = self::REMOVAL_ACTION_DELETE)
 	{
-		$keys = array_flip($keys);
-		return array_map(function ($item) use ($keys) {
+		$flipped_keys = array_flip($keys);
+		return array_map(function ($item) use ($flipped_keys, $removal_action) {
 			if (!is_array($item)) {
 				return [];
 			}
-			return array_intersect_key($item, $keys);
+			switch ($removal_action) {
+				case self::REMOVAL_ACTION_DELETE:
+					return array_intersect_key($item, $flipped_keys);
+				case self::REMOVAL_ACTION_NULLIFY:
+					$keys_to_remove = array_fill_keys(array_keys(array_diff_key($item, $flipped_keys)), null);
+					return array_replace($item, $keys_to_remove);
+				default:
+					throw new \InvalidArgumentException("Invalid removal_action provided '{$removal_action}' must be one of the available constants.");
+			}
 		}, $collection);
 	}
 
@@ -53,16 +66,29 @@ class CollectionUtility
 	 * Remove specific keys from every item in the collection
 	 * @param array $collection
 	 * @param array $keys The keys to remove
+	 * @param string $removal_action One of the removal action constants. Default is to delete keys but you can also
+	 *     nullify / clear them instead.
 	 * @return array
 	 */
-	public static function removeKeys(array $collection, $keys)
+	public static function removeKeys(array $collection, $keys, $removal_action = self::REMOVAL_ACTION_DELETE)
 	{
-		$keys = array_flip($keys);
-		return array_map(function ($item) use ($keys) {
+		return array_map(function ($item) use ($keys, $removal_action) {
 			if (!is_array($item)) {
 				return [];
 			}
-			return array_diff_key($item, $keys);
+			switch ($removal_action) {
+				case self::REMOVAL_ACTION_DELETE:
+					return array_diff_key($item, array_flip($keys));
+				case self::REMOVAL_ACTION_NULLIFY:
+					foreach ($item as $key => $value) {
+						if (in_array($key, $keys)) {
+							$item[ $key ] = null;
+						}
+					}
+					return $item;
+				default:
+					throw new \InvalidArgumentException("Invalid removal_action provided '{$removal_action}' must be one of the available constants.");
+			}
 		}, $collection);
 	}
 
@@ -312,11 +338,13 @@ class CollectionUtility
 	 * Sort a collection by a nested key - do not maintain key association
 	 * @param array $array The collection
 	 * @param string $property The name of the property to sort by. This can be a dot separated string.
-	 * @param string $sort_direction The direction to sort in. One of the SORT_DIRECTION_* constants or null to sort ascending.
+	 * @param string $sort_direction The direction to sort in. One of the SORT_DIRECTION_* constants or null to sort
+	 *     ascending.
 	 * @param $sort_flags @see http://php.net/manual/en/function.asort.php
 	 * @return array
 	 */
-	public static function sort(array $array, $property, $sort_direction = self::SORT_DIRECTION_ASCENDING, $sort_flags=SORT_REGULAR){
+	public static function sort(array $array, $property, $sort_direction = self::SORT_DIRECTION_ASCENDING, $sort_flags = SORT_REGULAR)
+	{
 		return array_values(self::asort($array, $property, $sort_direction, $sort_flags));
 	}
 
@@ -324,15 +352,17 @@ class CollectionUtility
 	 * Sort a collection by a nested key - maintain key association
 	 * @param array $array The collection
 	 * @param string $property The name of the property to sort by. This can be a dot separated string.
-	 * @param string $sort_direction The direction to sort in. One of the SORT_DIRECTION_* constants or null to sort ascending.
+	 * @param string $sort_direction The direction to sort in. One of the SORT_DIRECTION_* constants or null to sort
+	 *     ascending.
 	 * @param $sort_flags @see http://php.net/manual/en/function.asort.php
 	 * @return array
 	 */
-	public static function asort(array $array, $property, $sort_direction = self::SORT_DIRECTION_ASCENDING, $sort_flags=SORT_REGULAR){
+	public static function asort(array $array, $property, $sort_direction = self::SORT_DIRECTION_ASCENDING, $sort_flags = SORT_REGULAR)
+	{
 		$sort_target = CollectionUtility::pluck($array, $property);
-		if( $sort_direction == self::SORT_DIRECTION_ASCENDING || !isset($sort_direction) ) {
+		if ($sort_direction == self::SORT_DIRECTION_ASCENDING || !isset($sort_direction)) {
 			asort($sort_target, $sort_flags);
-		} elseif( $sort_direction == self::SORT_DIRECTION_DESCENDING ){
+		} elseif ($sort_direction == self::SORT_DIRECTION_DESCENDING) {
 			arsort($sort_target, $sort_flags);
 		} else {
 			throw new \InvalidArgumentException("Sort direction '{$sort_direction}' not valid. Must be one of asc, desc.");

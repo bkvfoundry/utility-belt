@@ -184,4 +184,52 @@ class ArrayUtilityTest extends TestCase
 			"c.d.g" => ["h" => "i"]
 		], $result);
 	}
+
+	public function testThatKeysCanBeKept()
+	{
+		$item = ["a" => "b", "c" => "d", "e" => "f"];
+
+		//Default action (delete)
+		$kept_keys = ArrayUtility::keepKeys($item, ["c", "a"]);
+		$this->assertEquals(["a" => "b", "c" => "d"], $kept_keys);
+
+		//Explicit action (delete)
+		$kept_keys = ArrayUtility::keepKeys($item, ["a", "c"], ArrayUtility::REMOVAL_ACTION_DELETE);
+		$this->assertEquals(["a" => "b", "c" => "d"], $kept_keys);
+
+		//Nullify action
+		$kept_keys = ArrayUtility::keepKeys($item, ["a", "c"], ArrayUtility::REMOVAL_ACTION_NULLIFY);
+		$this->assertEquals(["a" => "b", "c" => "d", "e" => null], $kept_keys);
+
+		//Invalid actions
+		try {
+			ArrayUtility::keepKeys($item, ["a", "c"], "invalid");
+			$this->fail("Expected invalid argument exception");
+		} catch (\InvalidArgumentException $e) {
+		}
+	}
+
+	public function testThatKeysCanBeRemoved()
+	{
+		$item = ["a" => "b", "c" => "d", "e" => "f"];
+
+		//Default action (delete)
+		$kept_keys = ArrayUtility::removeKeys($item, ["c", "a"]);
+		$this->assertEquals(["e" => "f"], $kept_keys);
+
+		//Explicit action (delete)
+		$kept_keys = ArrayUtility::removeKeys($item, ["e"], ArrayUtility::REMOVAL_ACTION_DELETE);
+		$this->assertEquals(["a" => "b", "c" => "d"], $kept_keys);
+
+		//Nullify action
+		$kept_keys = ArrayUtility::removeKeys($item, ["a", "c"], ArrayUtility::REMOVAL_ACTION_NULLIFY);
+		$this->assertEquals(["a" => null, "c" => null, "e" => "f"], $kept_keys);
+
+		//Invalid actions
+		try {
+			ArrayUtility::removeKeys($item, ["a", "c"], "invalid");
+			$this->fail("Expected invalid argument exception");
+		} catch (\InvalidArgumentException $e) {
+		}
+	}
 }
