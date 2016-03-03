@@ -223,4 +223,23 @@ class ArrayUtility
 	{
 		return array_keys($array) !== range(0, count($array) - 1);
 	}
+
+	/**
+	 * Perform an array map that will pass in the value, key and array
+	 *
+	 * @param \Iterator|array $array
+	 * @param callable $callable
+	 * @return array
+	 */
+	public static function map($array, callable $callable)
+	{
+		if (!$array) {
+			return [];
+		}
+		$return = [];
+		foreach ($array as $k => $v) {
+			$return[] = call_user_func_array($callable, [$v, $k, $array]);
+		}
+		return $return;
+	}
 }
