@@ -21,7 +21,8 @@ dependencies or third party packages.
 
 ## CollectionUtility
 
-### filterWhere(Not)(array $items, array $properties)
+### filterWhere / filterWhereNot
+*(array $items, array $properties)*
 
 Some extremely common functionality involves filtering collections (arrays of rows)
  based on a property list. The code required for this via array_filter tends to become
@@ -60,11 +61,15 @@ CollectionUtility::filterWhere($items,["dog.name"=>"betty"])
 CollectionUtility::filterWhere($items,[["dog.name"=>"betty"],["name"=>"john"]]);
 // [["name"=>"william",...], ["name"=>"john"]]
 ```
-### findWhere(Not)(array $items, array $properties)
+### findWhere / findWhereNot
+*(array $items, array $properties)*
+
 Similar to the filter methods but returns the first matching result and optionally
 the key where it was found.
 
-### groupByProperty/keyByProperty(array $array, $key)
+### groupByProperty / keyByProperty
+*(array $array, $key)*
+
 Re-organises rows in a collection under the values of one or more properties.
 
 The difference between the two methods is that key by property allows for only 
@@ -103,7 +108,9 @@ CollectionUtility::groupByProperty($items,"dog.name")
 ]
 ```
 
-### (a)sort(array $array, $property, $sort_direction = self::SORT_DIRECTION_ASCENDING, $sort_flags=SORT_REGULAR)
+### sort / asort
+*(array $array, $property, $sort_direction = self::SORT_DIRECTION_ASCENDING, $sort_flags=SORT_REGULAR)*
+
 Sort a collection using a property or nested property
 ```
 $items = [
@@ -122,15 +129,60 @@ CollectionUtility::sort($items, "nested.number", CollectionUtility::SORT_DIRECTI
 ]
 ```
 
-### random(array $array)
+### keepKeys
+*(array $array, array $keys, $removal_action = CollectionUtility::REMOVAL_ACTION_DELETE)*
+
+Remove (or nullify) all keys in each collection item except for those specified in the keys arg
+```
+$items = [
+    ["animal"=>"dog","name"=>"John","weather"=>"mild"],
+    ["animal"=>"cat","name"=>"William"]
+];
+
+CollectionUtility::keepKeys($items, ["animal","weather"], CollectionUtility::REMOVAL_ACTION_DELETE);
+[
+    ["animal"=>"dog", "weather"=>"mild"],
+    ["animal"=>"cat"]
+]
+
+CollectionUtility::keepKeys($items, ["animal","weather"], CollectionUtility::REMOVAL_ACTION_NULLIFY);
+[
+    ["animal"=>"dog", "name"=>null, ""weather"=>"mild"],
+    ["animal"=>"cat", "name"=>null]
+]
+```
+
+### removeKeys
+*(array $array, array $keys, $removal_action = CollectionUtility::REMOVAL_ACTION_DELETE)*
+
+Remove (or nullify) any keys provided in the $keys argument in each collection item.
+```
+$items = [
+    ["animal"=>"dog","name"=>"John","weather"=>"mild"],
+    ["animal"=>"cat","name"=>"William"]
+];
+
+CollectionUtility::removeKeys($items, ["animal","weather"], CollectionUtility::REMOVAL_ACTION_DELETE);
+[
+    ["name"=>"John"],
+    ["name"=>"William"]
+]
+```
+
+### random
+*(array $array)*
+
 Get a random item from an array
 
-### shuffle(array $array)
+### shuffle
+*(array $array)*
+
 Shuffle an array and return the result
 
 ## ArrayUtility
 
-### dotRead(Properties)
+### dotRead
+*(array $array, $property, $default_value=null)*
 
 ```php
 $array = [
@@ -150,7 +202,9 @@ ArrayUtility::dotRead($array, "a.very.deep.hole")
 "with a prize at the bottom"
 ```
 
-### flatten/inflate
+### flatten / inflate
+*(array $array)*
+
 ```
 $items = [
     "a"=>[
@@ -191,7 +245,9 @@ ArrayUtility::inflate($flattenedArray);
 ]
 ```
 
-### isAssoc(array $array)
+### isAssoc
+*(array $array)*
+
 Quick test to determine whether an array is associative or not.
 ```
 ArrayUtility::isAssoc(["a"=>1,"b"=>2])
@@ -201,8 +257,25 @@ ArrayUtility::isAssoc(["a","b"])
 false
 ```
 
-### mapRecursive(array $array, callable $callback, $map_arrays = false)
-Like array walk recursive but doesn't mutate the array. 
+### keepKeys
+*(array $array, array $keys, ArrayUtility::REMOVAL_ACTION_DELETE)*
+
+Same as CollectionUtility::keepKeys but operates on a basic array instead of a collection of arrays.
+
+### removeKeys
+*(array $array, array $keys, ArrayUtility::REMOVAL_ACTION_DELETE)*
+
+Same as CollectionUtility::removeKeys but operates on a basic array instead of a collection of arrays.
+
+### mapRecursive
+*(array $array, callable $callback, $map_arrays = false)*
+
+Like array walk recursive but doesn't mutate the array. Also, callback receives three arguments: $value, $key, $array
+
+### map
+*(array $array, callable $callback)*
+
+Like array_map but the callback receives three arguments: $value, $key, $array
 
 ## Install
 Install `UtilityBelt` using Composer.
