@@ -291,4 +291,64 @@ class ArrayUtilityTest extends TestCase
 
 		$this->assertEquals([], $result);
 	}
+
+	public function testGetFirstElement()
+	{
+		$result = ArrayUtility::first(['1', '2']);
+		$this->assertEquals('1', $result);
+	}
+
+	public function testGetFirstElementWithEmptyArray()
+	{
+		$result = ArrayUtility::first([]);
+		$this->assertEquals(null, $result);
+	}
+
+	public function testGetLastElement()
+	{
+		$result = ArrayUtility::last(['1', '2']);
+		$this->assertEquals('2', $result);
+	}
+
+	public function testGetLastElementWithEmptyArray()
+	{
+		$result = ArrayUtility::last([]);
+		$this->assertEquals(null, $result);
+	}
+
+	public function testGetFirstKeyInAssocArray()
+	{
+		$result = ArrayUtility::firstKey(['a'=>'A', 'b'=>'B']);
+		$this->assertEquals('a', $result);
+	}
+
+	public function testGetLastKeyInAssocArray()
+	{
+		$result = ArrayUtility::lastKey(['a'=>'A', 'b'=>'B']);
+		$this->assertEquals('b', $result);
+	}
+
+	public function testGetFirstKeyInEmptyArray()
+	{
+		$result = ArrayUtility::firstKey([]);
+		$this->assertEquals(null, $result);
+	}
+
+	public function testGetLastKeyInEmptyArray()
+	{
+		$result = ArrayUtility::lastKey([]);
+		$this->assertEquals(null, $result);
+	}
+
+	public function testGetFirstKeyInArray()
+	{
+		$result = ArrayUtility::firstKey(['a', 'b']);
+		$this->assertEquals(0, $result);
+	}
+
+	public function testGetLastKeyInArray()
+	{
+		$result = ArrayUtility::lastKey(['a', 'b']);
+		$this->assertEquals(1, $result);
+	}
 }
