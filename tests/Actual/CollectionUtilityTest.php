@@ -18,7 +18,7 @@ class CollectionUtilityTest extends TestCase
 		$this->assertEquals(["b", "c", null, null], $plucked);
 	}
 
-	public function testThatKeysCanBeKeptInMultiDimArray()
+	public function testThatKeysCanBeKeptInArray()
 	{
 		$items = [
 			["a" => "b", "c" => "d"],
@@ -26,15 +26,39 @@ class CollectionUtilityTest extends TestCase
 			null
 		];
 
+		//Default action (delete)
 		$kept_keys = CollectionUtility::keepKeys($items, ["a", "c"]);
 		$this->assertEquals([
 			["a" => "b", "c" => "d"],
 			["a" => "c", "c" => "e"],
 			[]
 		], $kept_keys);
+
+		//Explicit action (delete)
+		$kept_keys = CollectionUtility::keepKeys($items, ["a", "c"], CollectionUtility::REMOVAL_ACTION_DELETE);
+		$this->assertEquals([
+			["a" => "b", "c" => "d"],
+			["a" => "c", "c" => "e"],
+			[]
+		], $kept_keys);
+
+		//Nullify action
+		$kept_keys = CollectionUtility::keepKeys($items, ["a", "c"], CollectionUtility::REMOVAL_ACTION_NULLIFY);
+		$this->assertEquals([
+			["a" => "b", "c" => "d"],
+			["a" => "c", "c" => "e", "d" => null],
+			[]
+		], $kept_keys);
+
+		//Invalid actions
+		try {
+			CollectionUtility::keepKeys($items, ["a", "c"], "invalid");
+			$this->fail("Expected invalid argument exception");
+		} catch (\InvalidArgumentException $e) {
+		}
 	}
 
-	public function testThatKeysCanBeRemovedInMultiDimArray()
+	public function testThatKeysCanBeRemovedInArray()
 	{
 		$items = [
 			["a" => "b", "c" => "d"],
@@ -42,12 +66,46 @@ class CollectionUtilityTest extends TestCase
 			null
 		];
 
+		//Default action (delete)
 		$kept_keys = CollectionUtility::removeKeys($items, ["a", "c"]);
 		$this->assertEquals([
 			[],
 			["d" => "e"],
 			[]
 		], $kept_keys);
+
+		//Explicit action (delete)
+		$kept_keys = CollectionUtility::removeKeys($items, ["a", "c"], CollectionUtility::REMOVAL_ACTION_DELETE);
+		$this->assertEquals([
+			[],
+			["d" => "e"],
+			[]
+		], $kept_keys);
+
+		$special_items = [
+		    ["animal"=>"dog","name"=>"John","weather"=>"mild"],
+		    ["animal"=>"cat","name"=>"William"]
+		];
+		$kept_keys = CollectionUtility::removeKeys($special_items, ["animal","weather"], CollectionUtility::REMOVAL_ACTION_DELETE);
+		$this->assertEquals([
+		    ["name"=>"John"],
+		    ["name"=>"William"]
+		],$kept_keys);
+
+		//Nullify action
+		$kept_keys = CollectionUtility::removeKeys($items, ["a", "c"], CollectionUtility::REMOVAL_ACTION_NULLIFY);
+		$this->assertEquals([
+			["a" => null, "c" => null],
+			["a" => null, "c" => null, "d" => "e"],
+			[]
+		], $kept_keys);
+
+		//Invalid actions
+		try {
+			CollectionUtility::removeKeys($items, ["a", "c"], "invalid");
+			$this->fail("Expected invalid argument exception");
+		} catch (\InvalidArgumentException $e) {
+		}
 	}
 
 	public function testThatCollectionCanBeKeyedByItemProperty()
@@ -329,45 +387,53 @@ class CollectionUtilityTest extends TestCase
 		$this->assertEquals(["a" => 2], $value);
 	}
 
-	public function testThatCollectionCanBeSortedByNestedProperty(){
+	public function testThatCollectionCanBeSortedByNestedProperty()
+	{
 		$collection = [
-			["string"=>"a", "nested"=>["number"=>1]],
-			["string"=>"d", "nested"=>["number"=>3]],
-			["string"=>"c", "nested"=>["number"=>3]],
-			["string"=>"b", "nested"=>["number"=>2]],
+			["string" => "a", "nested" => ["number" => 1]],
+			["string" => "d", "nested" => ["number" => 3]],
+			["string" => "c", "nested" => ["number" => 3]],
+			["string" => "b", "nested" => ["number" => 2]],
 		];
 
 		//Sort ascending number
 		$this->assertEquals([
-			["string"=>"a", "nested"=>["number"=>1]],
-			["string"=>"b", "nested"=>["number"=>2]],
-			["string"=>"d", "nested"=>["number"=>3]],
-			["string"=>"c", "nested"=>["number"=>3]],
-		],CollectionUtility::sort($collection, "nested.number", null, SORT_NUMERIC));
+			["string" => "a", "nested" => ["number" => 1]],
+			["string" => "b", "nested" => ["number" => 2]],
+			["string" => "d", "nested" => ["number" => 3]],
+			["string" => "c", "nested" => ["number" => 3]],
+		], CollectionUtility::sort($collection, "nested.number", null, SORT_NUMERIC));
 
 		//Sort ascending string
 		$this->assertEquals([
-			["string"=>"a", "nested"=>["number"=>1]],
-			["string"=>"b", "nested"=>["number"=>2]],
-			["string"=>"c", "nested"=>["number"=>3]],
-			["string"=>"d", "nested"=>["number"=>3]],
-		],CollectionUtility::sort($collection, "string", null, SORT_FLAG_CASE | SORT_STRING));
+			["string" => "a", "nested" => ["number" => 1]],
+			["string" => "b", "nested" => ["number" => 2]],
+			["string" => "c", "nested" => ["number" => 3]],
+			["string" => "d", "nested" => ["number" => 3]],
+		], CollectionUtility::sort($collection, "string", null, SORT_FLAG_CASE | SORT_STRING));
 
 		//Maintain indexes
 		$this->assertEquals([
-			0=>["string"=>"a", "nested"=>["number"=>1]],
-			3=>["string"=>"b", "nested"=>["number"=>2]],
-			2=>["string"=>"c", "nested"=>["number"=>3]],
-			1=>["string"=>"d", "nested"=>["number"=>3]],
-		],CollectionUtility::asort($collection, "string", null, SORT_FLAG_CASE | SORT_STRING));
+			0 => ["string" => "a", "nested" => ["number" => 1]],
+			3 => ["string" => "b", "nested" => ["number" => 2]],
+			2 => ["string" => "c", "nested" => ["number" => 3]],
+			1 => ["string" => "d", "nested" => ["number" => 3]],
+		], CollectionUtility::asort($collection, "string", null, SORT_FLAG_CASE | SORT_STRING));
 
 		//Sort descending
 		$this->assertEquals([
-			["string"=>"c", "nested"=>["number"=>3]],
-			["string"=>"d", "nested"=>["number"=>3]],
-			["string"=>"b", "nested"=>["number"=>2]],
-			["string"=>"a", "nested"=>["number"=>1]],
-		],CollectionUtility::sort($collection, "nested.number", CollectionUtility::SORT_DIRECTION_DESCENDING));
+			["string" => "c", "nested" => ["number" => 3]],
+			["string" => "d", "nested" => ["number" => 3]],
+			["string" => "b", "nested" => ["number" => 2]],
+			["string" => "a", "nested" => ["number" => 1]],
+		], CollectionUtility::sort($collection, "nested.number", CollectionUtility::SORT_DIRECTION_DESCENDING));
+
+		//Invalid direction
+		try {
+			CollectionUtility::sort($collection, "something", "invalid");
+			$this->fail("Expected invalid argument exception");
+		} catch (\InvalidArgumentException $e) {
+		}
 	}
 
 	public function testThatRandomItemIsReturnedViaRandom()

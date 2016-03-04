@@ -146,7 +146,7 @@ class ArrayUtilityTest extends TestCase
 		$array2 = $array;
 
 		//Ensure map is applied recursively
-		$this->assertEquals(["a" => "b", "c" => ["d", "e"]], ArrayUtility::mapRecursive($array, "trim"), "Trim not run recursively");
+		$this->assertEquals(["a" => "b", "c" => ["d", "e"]], ArrayUtility::mapRecursive($array, function($value){ return trim($value); }), "Trim not run recursively");
 
 		//Ensure array doesn't mutate
 		$this->assertEquals($array, $array2, "Array has mutated");
@@ -185,16 +185,64 @@ class ArrayUtilityTest extends TestCase
 		], $result);
 	}
 
+	public function testThatKeysCanBeKept()
+	{
+		$item = ["a" => "b", "c" => "d", "e" => "f"];
+
+		//Default action (delete)
+		$kept_keys = ArrayUtility::keepKeys($item, ["c", "a"]);
+		$this->assertEquals(["a" => "b", "c" => "d"], $kept_keys);
+
+		//Explicit action (delete)
+		$kept_keys = ArrayUtility::keepKeys($item, ["a", "c"], ArrayUtility::REMOVAL_ACTION_DELETE);
+		$this->assertEquals(["a" => "b", "c" => "d"], $kept_keys);
+
+		//Nullify action
+		$kept_keys = ArrayUtility::keepKeys($item, ["a", "c"], ArrayUtility::REMOVAL_ACTION_NULLIFY);
+		$this->assertEquals(["a" => "b", "c" => "d", "e" => null], $kept_keys);
+
+		//Invalid actions
+		try {
+			ArrayUtility::keepKeys($item, ["a", "c"], "invalid");
+			$this->fail("Expected invalid argument exception");
+		} catch (\InvalidArgumentException $e) {
+		}
+	}
+
+	public function testThatKeysCanBeRemoved()
+	{
+		$item = ["a" => "b", "c" => "d", "e" => "f"];
+
+		//Default action (delete)
+		$kept_keys = ArrayUtility::removeKeys($item, ["c", "a"]);
+		$this->assertEquals(["e" => "f"], $kept_keys);
+
+		//Explicit action (delete)
+		$kept_keys = ArrayUtility::removeKeys($item, ["e"], ArrayUtility::REMOVAL_ACTION_DELETE);
+		$this->assertEquals(["a" => "b", "c" => "d"], $kept_keys);
+
+		//Nullify action
+		$kept_keys = ArrayUtility::removeKeys($item, ["a", "c"], ArrayUtility::REMOVAL_ACTION_NULLIFY);
+		$this->assertEquals(["a" => null, "c" => null, "e" => "f"], $kept_keys);
+
+		//Invalid actions
+		try {
+			ArrayUtility::removeKeys($item, ["a", "c"], "invalid");
+			$this->fail("Expected invalid argument exception");
+		} catch (\InvalidArgumentException $e) {
+		}
+	}
+
 	public function testMapCallbackIsFired()
 	{
 		$arr = [
-				'one' => 'foo',
+			'one' => 'foo',
 		];
 
-		$mock = $this->getMock('stdClass', array('myCallBack'));
+		$mock = $this->getMock('stdClass', ['myCallBack']);
 		$mock->expects($this->once())
-				->method('myCallBack')
-				->will($this->returnValue('test'));
+			->method('myCallBack')
+			->will($this->returnValue('test'));
 
 		ArrayUtility::map($arr, [$mock, 'myCallBack']);
 	}
@@ -202,45 +250,45 @@ class ArrayUtilityTest extends TestCase
 	public function testMapFunctionReceivesCorrectParams()
 	{
 		$arr = [
-				'one' => 'foo',
+			'one' => 'foo',
 		];
 
-		ArrayUtility::map($arr, function($value, $key, $arr){
+		ArrayUtility::map($arr, function ($value, $key, $arr) {
 			$this->assertEquals('foo', $value);
 			$this->assertEquals('one', $key);
-			$this->assertEquals(['one'=>'foo'], $arr);
+			$this->assertEquals(['one' => 'foo'], $arr);
 		});
 	}
 
 	public function testMapFunctionReturnsCorrectMap()
 	{
 		$arr = [
-				'one' => 'foo',
+			'one' => 'foo',
 		];
 
-		$result = ArrayUtility::map($arr, function($value, $key, $arr){
+		$result = ArrayUtility::map($arr, function ($value, $key, $arr) {
 			return ['key' => $key, 'value' => $value, 'arr' => $arr];
 		});
 
-        $expected = [
-            [
-                'key' => 'one',
-                'value' => 'foo',
-                'arr' => [
-                    'one' => 'foo',
-                ]
-            ]
-        ];
+		$expected = [
+			[
+				'key' => 'one',
+				'value' => 'foo',
+				'arr' => [
+					'one' => 'foo',
+				]
+			]
+		];
 
 		$this->assertEquals($expected, $result);
 	}
 
-    public function testMapReturnsEmptyArrayWithFalseyInput()
-    {
-        $result = ArrayUtility::map([], function($value, $key, $arr){
-            return 'test';
-        });
+	public function testMapReturnsEmptyArrayWithEmptyArrayInput()
+	{
+		$result = ArrayUtility::map([], function ($value, $key, $arr) {
+			return 'test';
+		});
 
-        $this->assertEquals([], $result);
-    }
+		$this->assertEquals([], $result);
+	}
 }

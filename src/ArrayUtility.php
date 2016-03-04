@@ -4,6 +4,9 @@ namespace BkvFoundry\UtilityBelt;
 
 class ArrayUtility
 {
+	const REMOVAL_ACTION_DELETE  = "delete";
+	const REMOVAL_ACTION_NULLIFY = "nullify";
+
 	/**
 	 * Flatten an array
 	 * @param array $array The array to flatten
@@ -171,12 +174,12 @@ class ArrayUtility
 	{
 		foreach ($array as $key => $value) {
 			if (is_array($value) && $map_arrays) {
-				$value = call_user_func($callback, $value);
+				$value = call_user_func_array($callback, [$value, $key, $array]);
 			}
 			if (is_array($value)) {
 				$value = self::mapRecursive($value, $callback, $map_arrays);
 			} else {
-				$value = call_user_func($callback, $value);
+				$value = call_user_func_array($callback, [$value, $key, $array]);
 			}
 			$array[ $key ] = $value;
 		}
@@ -187,24 +190,28 @@ class ArrayUtility
 	 * Reduce the array to only the keys specified
 	 * @param array $array
 	 * @param array $keys The keys to keep
+	 * @param string $removal_action One of the removal action constants. Default is to delete keys but you can also
+	 *     nullify / clear them instead.
 	 * @return array
 	 */
-	public static function keepKeys(array $array, $keys)
+	public static function keepKeys(array $array, $keys, $removal_action = self::REMOVAL_ACTION_DELETE)
 	{
 		//Reuse existing logic
-		return current(CollectionUtility::keepKeys([$array],$keys));
+		return current(CollectionUtility::keepKeys([$array], $keys, $removal_action));
 	}
 
 	/**
 	 * Remove specific keys from the array
 	 * @param array $array
 	 * @param array $keys The keys to remove
+	 * @param string $removal_action One of the removal action constants. Default is to delete keys but you can also
+	 *     nullify / clear them instead.
 	 * @return array
 	 */
-	public static function removeKeys(array $array, $keys)
+	public static function removeKeys(array $array, $keys, $removal_action = self::REMOVAL_ACTION_DELETE)
 	{
 		//Reuse existing logic
-		return current(CollectionUtility::removeKeys([$array], $keys));
+		return current(CollectionUtility::removeKeys([$array], $keys, $removal_action));
 	}
 
 	/**
@@ -224,11 +231,8 @@ class ArrayUtility
 	 * @param callable $callable
 	 * @return array
 	 */
-	public static function map($array, callable $callable)
+	public static function map(array $array, callable $callable)
 	{
-		if (!$array) {
-			return [];
-		}
 		$return = [];
 		foreach ($array as $k => $v) {
 			$return[] = call_user_func_array($callable, [$v, $k, $array]);
