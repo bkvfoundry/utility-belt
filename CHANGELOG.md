@@ -2,6 +2,16 @@
 
 All notable changes to ```UtilityBelt``` will be noted in this file.
 
+## 2.1.0
+
+### Methods Added
+* ArrayUtility::first
+* ArrayUtility::last
+* ArrayUtility::firstKey
+* ArrayUtility::lastKey
+
+New methods added to ArrayUtility to make it easier to deal with function call results immediately without first assigning the result to another variable.
+
 ## 2.0.0
 
 ### Features
