@@ -277,6 +277,26 @@ Like array walk recursive but doesn't mutate the array. Also, callback receives 
 
 Like array_map but the callback receives three arguments: $value, $key, $array
 
+### first
+*(array $array)*
+
+Returns the first element from an array. More useful than reset() because it can handle the result of a function.
+
+### last
+*(array $array)*
+
+Returns the last element from an array. More useful than end() because it can handle the result of a function.
+
+### firstKey
+*(array $array)*
+
+Returns the key of the first element in an array.
+
+### lastKey
+*(array $array)*
+
+Returns the key of the last element in an array.
+
 ## Install
 Install `UtilityBelt` using Composer.
 

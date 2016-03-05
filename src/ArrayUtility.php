@@ -226,7 +226,6 @@ class ArrayUtility
 
 	/**
 	 * Perform an array map that will pass in the value, key and array
-	 *
 	 * @param \Iterator|array $array
 	 * @param callable $callable
 	 * @return array
@@ -238,5 +237,53 @@ class ArrayUtility
 			$return[] = call_user_func_array($callable, [$v, $k, $array]);
 		}
 		return $return;
+	}
+
+	/**
+	 * Returns the first element in the array
+	 * Useful for when you need the first element of an array returned by a function
+	 * @param array $array
+	 * @return mixed|null
+	 */
+	public static function first(array $array)
+	{
+		if (!$array) {
+			return null;
+		}
+		return reset($array);
+	}
+
+	/**
+	 * Returns the last element in the array.
+	 * Useful for when you need the first element of an array returned by a function
+	 * @param array $array
+	 * @return mixed|null
+	 */
+	public static function last(array $array)
+	{
+		if (!$array) {
+			return null;
+		}
+		return end($array);
+	}
+
+	/**
+	 * Returns the key of the first element in the array
+	 * @param array $array
+	 * @return mixed|null
+	 */
+	public static function firstKey(array $array)
+	{
+		return self::first(array_keys($array));
+	}
+
+	/**
+	 * Returns the key of the last element in the array
+	 * @param array $array
+	 * @return mixed|null
+	 */
+	public static function lastKey(array $array)
+	{
+		return self::last(array_keys($array));
 	}
 }
