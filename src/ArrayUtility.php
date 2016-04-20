@@ -103,18 +103,19 @@ class ArrayUtility
 	 * @param mixed $default_value Default value
 	 * @return mixed|null The value from the array or null
 	 */
-	public static function dotRead(array $array, $key, $default_value = null)
+	public static function dotRead(array $array = null, $key, $default_value = null)
 	{
-		if (is_array($array)) {
-			$keys = explode(".", $key);
-			$value = $array;
-			foreach ($keys as $key) {
-				if (!is_array($value) || !isset($value[ $key ])) {
-					$value = null;
-					break;
-				}
-				$value = $value[ $key ];
+		if (!is_array($array)) {
+			return $default_value;
+		}
+		$keys = explode(".", $key);
+		$value = $array;
+		foreach ($keys as $key) {
+			if (!is_array($value) || !isset($value[ $key ])) {
+				$value = null;
+				break;
 			}
+			$value = $value[ $key ];
 		}
 
 		//Get a default value
