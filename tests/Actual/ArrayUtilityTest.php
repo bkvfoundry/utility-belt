@@ -114,6 +114,11 @@ class ArrayUtilityTest extends TestCase
 		$this->assertEquals("default value", ArrayUtility::dotRead($array, "c.cc.ccc", "default value"));
 	}
 
+	public function testDotReadCanHandleNull()
+	{
+		$this->assertEquals('test_return', ArrayUtility::dotRead(null, 'test.key', 'test_return'));
+	}
+
 	public function testThatAssociativeArrayCanBeDetected()
 	{
 		$assoc_array = [
