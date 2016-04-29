@@ -152,6 +152,9 @@ CollectionUtility::keepKeys($items, ["animal","weather"], CollectionUtility::REM
 ]
 ```
 
+### only
+*Alias for keepKeys*
+
 ### removeKeys
 *(array $array, array $keys, $removal_action = CollectionUtility::REMOVAL_ACTION_DELETE)*
 
@@ -168,6 +171,9 @@ CollectionUtility::removeKeys($items, ["animal","weather"], CollectionUtility::R
     ["name"=>"William"]
 ]
 ```
+
+### except
+*Alias for removeKeys*
 
 ### random
 *(array $array)*

@@ -36,6 +36,19 @@ class CollectionUtility
 	}
 
 	/**
+	 * Alias for keepKeys
+	 * @param array $collection
+	 * @param array $keys The keys to keep
+	 * @param string $removal_action One of the removal action constants. Default is to delete keys but you can also
+	 *     nullify / clear them instead.
+	 * @return array
+	 */
+	public static function only(array $collection, $keys, $removal_action = self::REMOVAL_ACTION_DELETE)
+	{
+		return static::keepKeys($collection, $keys, $removal_action);
+	}
+
+	/**
 	 * Reduce every item in the collection to only the keys specified
 	 * @param array $collection
 	 * @param array $keys The keys to keep
@@ -60,6 +73,19 @@ class CollectionUtility
 					throw new \InvalidArgumentException("Invalid removal_action provided '{$removal_action}' must be one of the available constants.");
 			}
 		}, $collection);
+	}
+
+	/**
+	 * Alias for remove keys
+	 * @param array $collection
+	 * @param array $keys The keys to remove
+	 * @param string $removal_action One of the removal action constants. Default is to delete keys but you can also
+	 *     nullify / clear them instead.
+	 * @return array
+	 */
+	public function except(array $collection, $keys, $removal_action = self::REMOVAL_ACTION_DELETE)
+	{
+		return static::removeKeys($collection, $keys, $removal_action);
 	}
 
 	/**
