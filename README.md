@@ -4,20 +4,28 @@
 [![Build Status](https://img.shields.io/travis/bkvfoundry/utility-belt/master.svg?style=flat-square)](https://travis-ci.org/bkvfoundry/utility-belt)
 [![Coverage Status](https://img.shields.io/coveralls/bkvfoundry/utility-belt/master.svg?style=flat-square)](https://coveralls.io/repos/bkvfoundry/utility-belt/badge.svg?branch=master)
 
-Every time we start a new php project that requires even a small amount of data 
+Every time we start a new php project that requires even a small amount of data
 wrangling, we find ourselves re-writing the same helper functions over and over again.
- 
-This package provides some key functions that make it easier to perform 
+
+This package provides some key functions that make it easier to perform
 common tasks like:
 * finding and filtering values in collections of arrays
-* grouping values in collections by properties 
+* grouping values in collections by properties
 * extracting values from deeply nested associative arrays
-* recursive array mapping 
+* recursive array mapping
 * determining if an array is associative
 * and more...
- 
-These functions are all provided without pulling in any heavy framework 
+
+These functions are all provided without pulling in any heavy framework
 dependencies or third party packages.
+
+## Installation
+
+Install the latest version with
+
+```
+$ composer require bkvfoundry/utility-belt
+```
 
 ## CollectionUtility
 
@@ -72,7 +80,7 @@ the key where it was found.
 
 Re-organises rows in a collection under the values of one or more properties.
 
-The difference between the two methods is that key by property allows for only 
+The difference between the two methods is that key by property allows for only
 a single row per property in the result while grouping will return an array
 of collections.
 
@@ -86,7 +94,7 @@ $items = [
 CollectionUtility::keyByProperty($items,"dog.name")
 [
    "william"=>["name"=>"frank","dog"=>["name"=>"william"]],
-   "bruce"=>["name"=>"dodd","dog"=>["name"=>"bruce"]], 
+   "bruce"=>["name"=>"dodd","dog"=>["name"=>"bruce"]],
 ]
 
 CollectionUtility::keyByProperty($items,["name","dog.name"])
