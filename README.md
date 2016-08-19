@@ -24,7 +24,7 @@ dependencies or third party packages.
 Install the latest version with
 
 ```
-composer require bkvfoundry/utility-belt
+$ composer require bkvfoundry/utility-belt
 ```
 
 ## CollectionUtility
