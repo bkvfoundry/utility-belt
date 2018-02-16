@@ -114,9 +114,25 @@ class ArrayUtilityTest extends TestCase
 		$this->assertEquals("default value", ArrayUtility::dotRead($array, "c.cc.ccc", "default value"));
 	}
 
-	public function testDotReadCanHandleNull()
+	public function testThatADeepPropertyCanBeWritten()
 	{
-		$this->assertEquals('test_return', ArrayUtility::dotRead(null, 'test.key', 'test_return'));
+        // Setup source array
+        $array = [
+            'a' => [
+                'aa' => 'aa value',
+                'bb' => [
+                    'aaa' => 'aaa value'
+                ]
+            ]
+        ];
+
+        // Change existing value
+        ArrayUtility::dotWrite($array, 'a.aa', 'changed aa value');
+        $this->assertEquals('changed aa value', $array['a']['aa']);
+
+        // Set non-existing value
+        ArrayUtility::dotWrite($array, 'xx.yy', 'xx.yy value');
+        $this->assertEquals('xx.yy value', ArrayUtility::dotRead($array, 'xx.yy'));
 	}
 
 	public function testThatAssociativeArrayCanBeDetected()

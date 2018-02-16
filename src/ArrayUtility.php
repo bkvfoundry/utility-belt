@@ -98,17 +98,17 @@ class ArrayUtility
 
 	/**
 	 * Read a value from a nested array using a single string
-	 * @param array $array
-	 * @param string $key The read key e.g. "level1.level2.key"
-	 * @param mixed $default_value Default value
+	 * @param array  $array
+	 * @param string $readKey       The read key e.g. "level1.level2.key"
+	 * @param mixed  $default_value Default value
 	 * @return mixed|null The value from the array or null
 	 */
-	public static function dotRead(array $array = null, $key, $default_value = null)
+	public static function dotRead(array $array = null, $readKey, $default_value = null)
 	{
 		if (!is_array($array)) {
 			return $default_value;
 		}
-		$keys = explode(".", $key);
+		$keys = explode('.', $readKey);
 		$value = $array;
 		foreach ($keys as $key) {
 			if (!is_array($value) || !isset($value[ $key ])) {
@@ -119,12 +119,48 @@ class ArrayUtility
 		}
 
 		//Get a default value
-		if (!isset($value) && isset($default_value)) {
+		if ($value === null && $default_value !== null) {
 			return $default_value;
 		}
 
 		return $value;
 	}
+
+    /**
+     * Write a value to a nested array
+     * @param array  $array
+     * @param string $writeKey The write key e.g. "level1.level2.key"
+     * @param mixed  $value    Value to write
+     * @return bool  Returns true if write was successful
+     */
+    public static function dotWrite(array &$array, $writeKey, $value = null)
+    {
+        if (!is_array($array)) {
+            return false;
+        }
+
+        // Start value
+        $ref = &$array;
+
+        // Sequentially pull each key and traverse through the array
+        $keys = explode('.', $writeKey);
+        while (($key = array_shift($keys)) !== null) {
+            $hasMoreKeys = \count($keys) > 0;
+            if ($hasMoreKeys) {
+                if (!\array_key_exists($key, $ref)) {
+                    // Prepare the array
+                    $ref[$key] = [];
+                }
+                $ref = &$ref[$key];
+                continue;
+            }
+
+            // Last key
+            $ref[$key] = $value;
+        }
+
+        return true;
+    }
 
 	/**
 	 * Dot read multiple properties
