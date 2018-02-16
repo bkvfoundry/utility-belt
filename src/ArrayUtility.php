@@ -162,6 +162,29 @@ class ArrayUtility
         return true;
     }
 
+    /**
+     * Read a value from a nested array using a single string
+     * @param array  $array
+     * @param string $findKey The key to find e.g. "level1.level2.key"
+     * @return boolean True if the key exists
+     */
+    public static function dotExists(array $array = null, $findKey)
+    {
+        if (!is_array($array)) {
+            return false;
+        }
+        $keys = explode('.', $findKey);
+        $value = $array;
+        foreach ($keys as $key) {
+            if (!is_array($value) || !array_key_exists($key, $value)) {
+               return false;
+            }
+            $value = $value[ $key ];
+        }
+
+        return true;
+    }
+
 	/**
 	 * Dot read multiple properties
 	 * @param array $array

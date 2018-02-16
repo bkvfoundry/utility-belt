@@ -135,6 +135,30 @@ class ArrayUtilityTest extends TestCase
         $this->assertEquals('xx.yy value', ArrayUtility::dotRead($array, 'xx.yy'));
 	}
 
+    public function testThatCanTextExistenceOfADeepProperty()
+    {
+        // Setup source array
+        $array = [
+            'a' => [
+                'aa' => 'aa value',
+                'bb' => [
+                    'aaa' => 'aaa value'
+                ],
+                'xx' => [
+                    'yy' => null,
+                ]
+            ]
+        ];
+
+        $this->assertTrue(ArrayUtility::dotExists($array, 'a'));
+        $this->assertTrue(ArrayUtility::dotExists($array, 'a.aa'));
+        $this->assertFalse(ArrayUtility::dotExists($array, 'bb'));
+        $this->assertTrue(ArrayUtility::dotExists($array, 'a.bb.aaa'));
+        // Null value should still return true
+        $this->assertTrue(ArrayUtility::dotExists($array, 'a.xx.yy'));
+        $this->assertFalse(ArrayUtility::dotExists($array, 'zzz'));
+    }
+
 	public function testThatAssociativeArrayCanBeDetected()
 	{
 		$assoc_array = [
