@@ -2,6 +2,17 @@
 
 All notable changes to ```UtilityBelt``` will be noted in this file.
 
+## 2.2.0
+
+### Methods Added
+* ArrayUtility::dotExists
+* ArrayUtility::dotWrite
+* ArrayUtility::dotMutate
+
+### Other Changes
+* Extend ArrayUtility::dotRead to handle nulls being passed in as the array
+* Improved README including install instructions
+
 ## 2.1.0
 
 ### Methods Added
