@@ -127,22 +127,35 @@ class ArrayUtility
 	}
 
     /**
-     * Write a value to a nested array
+     * Write a value to a nested array and return the new array
      * @param array  $array
      * @param string $writeKey The write key e.g. "level1.level2.key"
      * @param mixed  $value    Value to write
-     * @return bool  Returns true if write was successful
+     * @return array|bool Returns a new array containing the value (or boolean false on failure)
      */
-    public static function dotWrite(array &$array, $writeKey, $value = null)
+    public static function dotWrite(array $array = null, $writeKey, $value = null)
     {
         if (!is_array($array)) {
             return false;
         }
 
-        // Start value
-        $ref = &$array;
+        // Mutate our array copy (copied in function invocation)
+        static::dotMutate($array, $writeKey, $value);
 
+        return $array;
+    }
+
+    /**
+     * Writes a value to a nested array by mutating the array.
+     * @param array  $array
+     * @param string $writeKey The write key e.g. "level1.level2.key"
+     * @param mixed  $value    Value to write
+     * @return void
+     */
+    public static function dotMutate(array &$array, $writeKey, $value = null)
+    {
         // Sequentially pull each key and traverse through the array
+        $ref = &$array;
         $keys = explode('.', $writeKey);
         while (($key = array_shift($keys)) !== null) {
             $hasMoreKeys = \count($keys) > 0;
@@ -158,15 +171,13 @@ class ArrayUtility
             // Last key
             $ref[$key] = $value;
         }
-
-        return true;
     }
 
     /**
-     * Read a value from a nested array using a single string
+     * Determine if a key exists within a nested array.
      * @param array  $array
      * @param string $findKey The key to find e.g. "level1.level2.key"
-     * @return boolean True if the key exists
+     * @return boolean True if the key exists (even if the value is null)
      */
     public static function dotExists(array $array = null, $findKey)
     {

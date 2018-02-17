@@ -114,28 +114,7 @@ class ArrayUtilityTest extends TestCase
 		$this->assertEquals("default value", ArrayUtility::dotRead($array, "c.cc.ccc", "default value"));
 	}
 
-	public function testThatADeepPropertyCanBeWritten()
-	{
-        // Setup source array
-        $array = [
-            'a' => [
-                'aa' => 'aa value',
-                'bb' => [
-                    'aaa' => 'aaa value'
-                ]
-            ]
-        ];
-
-        // Change existing value
-        ArrayUtility::dotWrite($array, 'a.aa', 'changed aa value');
-        $this->assertEquals('changed aa value', $array['a']['aa']);
-
-        // Set non-existing value
-        ArrayUtility::dotWrite($array, 'xx.yy', 'xx.yy value');
-        $this->assertEquals('xx.yy value', ArrayUtility::dotRead($array, 'xx.yy'));
-	}
-
-    public function testThatCanTextExistenceOfADeepProperty()
+    public function testExistenceOfADeepProperty()
     {
         // Setup source array
         $array = [
@@ -158,6 +137,50 @@ class ArrayUtilityTest extends TestCase
         $this->assertTrue(ArrayUtility::dotExists($array, 'a.xx.yy'));
         $this->assertFalse(ArrayUtility::dotExists($array, 'zzz'));
     }
+
+    public function testThatADeepPropertyCanBeWritten()
+    {
+        // Setup source array
+        $origArray = [
+            'a' => [
+                'aa' => 'aa value',
+                'bb' => [
+                    'aaa' => 'aaa value'
+                ]
+            ]
+        ];
+
+        // Change existing value
+        $array = ArrayUtility::dotWrite($origArray, 'a.aa', 'changed aa value');
+        $this->assertEquals('changed aa value', $array['a']['aa']);
+        $this->assertEquals('aa value', $origArray['a']['aa']);
+
+        // Set non-existing value
+        $array = ArrayUtility::dotWrite($array, 'xx.yy', 'xx.yy value');
+        $this->assertEquals('xx.yy value', ArrayUtility::dotRead($array, 'xx.yy'));
+        $this->assertFalse(ArrayUtility::dotExists($origArray, 'xx.yy'));
+    }
+
+	public function testThatADeepPropertyCanBeMutated()
+	{
+        // Setup source array
+        $array = [
+            'a' => [
+                'aa' => 'aa value',
+                'bb' => [
+                    'aaa' => 'aaa value'
+                ]
+            ]
+        ];
+
+        // Change existing value
+        ArrayUtility::dotMutate($array, 'a.aa', 'changed aa value');
+        $this->assertEquals('changed aa value', $array['a']['aa']);
+
+        // Set non-existing value
+        ArrayUtility::dotMutate($array, 'xx.yy', 'xx.yy value');
+        $this->assertEquals('xx.yy value', ArrayUtility::dotRead($array, 'xx.yy'));
+	}
 
 	public function testThatAssociativeArrayCanBeDetected()
 	{

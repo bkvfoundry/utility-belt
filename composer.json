@@ -1,7 +1,7 @@
 {
   "name": "bkvfoundry/utility-belt",
   "description": "A set of helpful utilities for working with data, collections (arrays of arrays) and arrays in php",
-  "keywords":["collection","filter","dot read","nested read","dot syntax", "map recursive","utility","utilities"],
+  "keywords":["collection","filter","array","dot read","nested read","dot syntax", "map recursive","utility","utilities"],
   "autoload": {
     "psr-4":{
       "BkvFoundry\\UtilityBelt\\":"src/"
