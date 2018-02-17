@@ -98,17 +98,17 @@ class ArrayUtility
 
 	/**
 	 * Read a value from a nested array using a single string
-	 * @param array $array
-	 * @param string $key The read key e.g. "level1.level2.key"
-	 * @param mixed $default_value Default value
+	 * @param array  $array
+	 * @param string $readKey       The read key e.g. "level1.level2.key"
+	 * @param mixed  $default_value Default value
 	 * @return mixed|null The value from the array or null
 	 */
-	public static function dotRead(array $array = null, $key, $default_value = null)
+	public static function dotRead(array $array = null, $readKey, $default_value = null)
 	{
 		if (!is_array($array)) {
 			return $default_value;
 		}
-		$keys = explode(".", $key);
+		$keys = explode('.', $readKey);
 		$value = $array;
 		foreach ($keys as $key) {
 			if (!is_array($value) || !isset($value[ $key ])) {
@@ -119,12 +119,82 @@ class ArrayUtility
 		}
 
 		//Get a default value
-		if (!isset($value) && isset($default_value)) {
+		if ($value === null && $default_value !== null) {
 			return $default_value;
 		}
 
 		return $value;
 	}
+
+    /**
+     * Write a value to a nested array and return the new array
+     * @param array  $array
+     * @param string $writeKey The write key e.g. "level1.level2.key"
+     * @param mixed  $value    Value to write
+     * @return array|bool Returns a new array containing the value (or boolean false on failure)
+     */
+    public static function dotWrite(array $array = null, $writeKey, $value = null)
+    {
+        if (!is_array($array)) {
+            return false;
+        }
+
+        // Mutate our array copy (copied in function invocation)
+        static::dotMutate($array, $writeKey, $value);
+
+        return $array;
+    }
+
+    /**
+     * Writes a value to a nested array by mutating the array.
+     * @param array  $array
+     * @param string $writeKey The write key e.g. "level1.level2.key"
+     * @param mixed  $value    Value to write
+     * @return void
+     */
+    public static function dotMutate(array &$array, $writeKey, $value = null)
+    {
+        // Sequentially pull each key and traverse through the array
+        $ref = &$array;
+        $keys = explode('.', $writeKey);
+        while (($key = array_shift($keys)) !== null) {
+            $hasMoreKeys = \count($keys) > 0;
+            if ($hasMoreKeys) {
+                if (!\array_key_exists($key, $ref)) {
+                    // Prepare the array
+                    $ref[$key] = [];
+                }
+                $ref = &$ref[$key];
+                continue;
+            }
+
+            // Last key
+            $ref[$key] = $value;
+        }
+    }
+
+    /**
+     * Determine if a key exists within a nested array.
+     * @param array  $array
+     * @param string $findKey The key to find e.g. "level1.level2.key"
+     * @return boolean True if the key exists (even if the value is null)
+     */
+    public static function dotExists(array $array = null, $findKey)
+    {
+        if (!is_array($array)) {
+            return false;
+        }
+        $keys = explode('.', $findKey);
+        $value = $array;
+        foreach ($keys as $key) {
+            if (!is_array($value) || !array_key_exists($key, $value)) {
+               return false;
+            }
+            $value = $value[ $key ];
+        }
+
+        return true;
+    }
 
 	/**
 	 * Dot read multiple properties

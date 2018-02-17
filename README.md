@@ -210,6 +210,84 @@ ArrayUtility::dotRead($array, "a.very.deep.hole")
 "with a prize at the bottom"
 ```
 
+### dotWrite
+*(array $array, $property, $value)*
+
+Original array:
+
+```php
+$array = [
+    "a"=>[
+        "very"=>[
+            "deep"=>[
+                "hole"=>"with a prize at the bottom"
+            ]
+        ]
+    ],
+    "i"=>[
+        "like"=>"candy"
+    ]
+]
+```
+
+Mutate existing properties:
+
+```php
+ArrayUtility::dotWrite($array, "a.very.deep.hole", "no prize!");
+ArrayUtility::dotWrite($array, "i.like", ["carrots","broccoli"]);
+```
+
+Array is now:
+
+```php
+$array = [
+    "a"=>[
+        "very"=>[
+            "deep"=>[
+                "hole"=>"no prize!"
+            ]
+        ]
+    ],
+    "i"=>[
+        "like"=>["carrots","broccoli"]
+    ]
+]
+```
+
+Set new properties:
+
+```php
+ArrayUtility::dotWrite($array, "a.very.shallow.hole", "that may contain a prize!");
+ArrayUtility::dotWrite($array, "i.also.like", "blue skies");
+```
+
+Array is now:
+
+```php
+$array = [
+    "a"=>[
+        "very"=>[
+            "deep"=>[
+                "hole"=>"no prize!"
+            ]
+        ]
+    ],
+    "a"=>[
+        "very"=>[
+            "shallow"=>[
+                "hole"=>"that may contain a prize!"
+            ]
+        ]
+    ],
+    "i"=>[
+        "like"=>["carrots","broccoli"]
+        "also"=>[
+            "like"=>"blue skies"
+        ]
+    ]
+]
+```
+
 ### flatten / inflate
 *(array $array)*
 
