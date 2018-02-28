@@ -4,6 +4,13 @@
 [![Build Status](https://img.shields.io/travis/bkvfoundry/utility-belt/master.svg?style=flat-square)](https://travis-ci.org/bkvfoundry/utility-belt)
 [![Coverage Status](https://img.shields.io/coveralls/bkvfoundry/utility-belt/master.svg?style=flat-square)](https://coveralls.io/repos/bkvfoundry/utility-belt/badge.svg?branch=master)
 
+**UPDATE!: UtilityBelt has a new home at Rex Labs**
+
+- [Github Repository](https://github.com/rexlabsio/utility-belt-php)
+- [Composer Package](https://packagist.org/packages/rexlabs/utility-belt)
+
+**Please update your projects to use the new package as it will no longer be maintained under the bkvfoundry repository**
+
 Every time we start a new php project that requires even a small amount of data
 wrangling, we find ourselves re-writing the same helper functions over and over again.
 
