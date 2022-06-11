@@ -1,8 +1,4 @@
-# UtilityBelt
-
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/bkvfoundry/utility-belt/master.svg?style=flat-square)](https://travis-ci.org/bkvfoundry/utility-belt)
-[![Coverage Status](https://img.shields.io/coveralls/bkvfoundry/utility-belt/master.svg?style=flat-square)](https://coveralls.io/repos/bkvfoundry/utility-belt/badge.svg?branch=master)
+# Deprecated
 
 **UPDATE!: UtilityBelt has a new home at Rex Labs**
 
@@ -10,6 +6,12 @@
 - [Composer Package](https://packagist.org/packages/rexlabs/utility-belt)
 
 **Please update your projects to use the new package as it will no longer be maintained under the bkvfoundry repository**
+
+# UtilityBelt
+
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Build Status](https://img.shields.io/travis/bkvfoundry/utility-belt/master.svg?style=flat-square)](https://travis-ci.org/bkvfoundry/utility-belt)
+[![Coverage Status](https://img.shields.io/coveralls/bkvfoundry/utility-belt/master.svg?style=flat-square)](https://coveralls.io/repos/bkvfoundry/utility-belt/badge.svg?branch=master)
 
 Every time we start a new php project that requires even a small amount of data
 wrangling, we find ourselves re-writing the same helper functions over and over again.
